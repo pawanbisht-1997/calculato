@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Loan Balance Transfer Calculator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .calculator {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="number"],
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <h2>Home Loan Balance Transfer Calculator</h2>
+      <label for="currentLoanAmount">Current Loan Amount (₹):</label>
+      <input
+        type="number"
+        id="currentLoanAmount"
+        placeholder="Enter current loan amount"
+      />
+
+      <label for="currentInterestRate">Current Interest Rate (%):</label>
+      <input
+        type="number"
+        id="currentInterestRate"
+        placeholder="Enter current interest rate"
+      />
+
+      <label for="remainingTerm">Remaining Term (Years):</label>
+      <input
+        type="number"
+        id="remainingTerm"
+        placeholder="Enter remaining loan term"
+      />
+
+      <label for="newInterestRate">New Interest Rate (%):</label>
+      <input
+        type="number"
+        id="newInterestRate"
+        placeholder="Enter new interest rate"
+      />
+
+      <button onclick="calculateBalanceTransfer()">Calculate</button>
+
+      <div id="result"></div>
+
+      <script>
+        function calculateBalanceTransfer() {
+          var currentLoanAmount = parseFloat(
+            document.getElementById("currentLoanAmount").value
+          );
+          var currentInterestRate = parseFloat(
+            document.getElementById("currentInterestRate").value
+          );
+          var remainingTerm = parseFloat(
+            document.getElementById("remainingTerm").value
+          );
+          var newInterestRate = parseFloat(
+            document.getElementById("newInterestRate").value
+          );
+
+          var currentMonthlyInterestRate = currentInterestRate / 12 / 100;
+          var currentMonths = remainingTerm * 12;
+          var currentMonthlyPayment =
+            (currentLoanAmount * currentMonthlyInterestRate) /
+            (1 - Math.pow(1 + currentMonthlyInterestRate, -currentMonths));
+
+          var newMonthlyInterestRate = newInterestRate / 12 / 100;
+          var newMonths = currentMonths;
+          var newMonthlyPayment =
+            (currentLoanAmount * newMonthlyInterestRate) /
+            (1 - Math.pow(1 + newMonthlyInterestRate, -newMonths));
+
+          var savings = currentMonthlyPayment - newMonthlyPayment;
+
+          var resultDiv = document.getElementById("result");
+          if (savings > 0) {
+            resultDiv.innerHTML =
+              "You could save ₹" +
+              savings.toFixed(2) +
+              " per month by transferring your balance.";
+          } else {
+            resultDiv.innerHTML =
+              "Transferring your balance might not be beneficial.";
+          }
+        }
+      </script>
+    </div>
+  </body>
+</html>

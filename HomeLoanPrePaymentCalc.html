@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Loan Prepayment Calculator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .calculator {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="number"],
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator">
+      <h2>Home Loan Prepayment Calculator</h2>
+      <label for="currentLoanAmount">Current Loan Amount (₹):</label>
+      <input
+        type="number"
+        id="currentLoanAmount"
+        placeholder="Enter current loan amount"
+      />
+
+      <label for="interestRate">Interest Rate (%):</label>
+      <input
+        type="number"
+        id="interestRate"
+        placeholder="Enter interest rate"
+      />
+
+      <label for="remainingTerm">Remaining Term (Years):</label>
+      <input
+        type="number"
+        id="remainingTerm"
+        placeholder="Enter remaining loan term"
+      />
+
+      <label for="additionalPayment">Additional Payment (₹):</label>
+      <input
+        type="number"
+        id="additionalPayment"
+        placeholder="Enter additional payment amount"
+      />
+
+      <button onclick="calculatePrepayment()">Calculate</button>
+
+      <div id="result"></div>
+
+      <script>
+        function calculatePrepayment() {
+          var currentLoanAmount = parseFloat(
+            document.getElementById("currentLoanAmount").value
+          );
+          var interestRate = parseFloat(
+            document.getElementById("interestRate").value
+          );
+          var remainingTerm = parseFloat(
+            document.getElementById("remainingTerm").value
+          );
+          var additionalPayment = parseFloat(
+            document.getElementById("additionalPayment").value
+          );
+
+          var monthlyInterestRate = interestRate / 12 / 100;
+          var months = remainingTerm * 12;
+
+          var monthlyPayment =
+            (currentLoanAmount * monthlyInterestRate) /
+            (1 - Math.pow(1 + monthlyInterestRate, -months));
+
+          var totalInterest = 0;
+          var totalPaid = 0;
+
+          for (var i = 0; i < months; i++) {
+            var interest = currentLoanAmount * monthlyInterestRate;
+            var principal = monthlyPayment - interest;
+            currentLoanAmount -= principal;
+
+            if (currentLoanAmount <= 0) {
+              currentLoanAmount = 0;
+              totalInterest += interest;
+              totalPaid += monthlyPayment;
+              break;
+            }
+
+            currentLoanAmount -= additionalPayment;
+
+            if (currentLoanAmount <= 0) {
+              currentLoanAmount = 0;
+              totalInterest += interest;
+              totalPaid += principal + interest;
+              break;
+            }
+
+            totalInterest += interest;
+            totalPaid += monthlyPayment;
+          }
+
+          var resultDiv = document.getElementById("result");
+          resultDiv.innerHTML =
+            "Total Interest Paid: ₹" +
+            totalInterest.toFixed(2) +
+            "<br>" +
+            "Total Amount Paid: ₹" +
+            totalPaid.toFixed(2);
+        }
+      </script>
+    </div>
+  </body>
+</html>
